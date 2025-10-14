@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            z-index: 0;
+        }
+
+        .navbar-custom {
+            background-color: rgba(34, 34, 34, 0.8);
+            z-index: 1;
+        }
+
+        .navbar-custom a {
+            color: #fff;
+            margin-left: 10px;
+            transition: color 0.3s;
+        }
+
+        .navbar-custom a:hover {
+            color: #ffd700;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            padding: 30px;
+            background-color: rgba(255,255,255,0.95);
+            z-index: 1;
+            position: relative;
+        }
+
+        .input-group-text {
+            background-color: #f1f1f1;
+        }
+
+        .toggle-password {
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #667eea;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a67d8;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #333333;
+        }
+
+        .form-label {
+            color: #495057;
+        }
+
+        footer {
+            background-color: rgba(34,34,34,0.8);
+            color: #fff;
+            text-align: center;
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .form-container {
+            min-height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+        <a class="navbar-brand text-white fw-bold" href="#">🎓 Student Manager</a>
+        <div class="ms-auto">
+            <a class="nav-link d-inline px-2" href="?lang=vi" th:classappend="${lang} == 'vi' ? 'fw-bold text-warning' : ''">VI</a>
+            <a class="nav-link d-inline px-2" href="?lang=ja" th:classappend="${lang} == 'ja' ? 'fw-bold text-warning' : ''">日本語</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Form đăng nhập -->
+<div class="form-container">
+    <div class="card" style="width: 100%; max-width: 450px;">
+
+        <h3 class="card-title mb-4 text-center" th:text="#{login.heading}">Đăng nhập</h3>
+
+        <!-- Hiển thị lỗi đăng nhập -->
+        <div th:if="${param.error}" class="alert alert-danger text-center">
+            Sai tên đăng nhập hoặc mật khẩu!
+        </div>
+        <!-- Hiển thị thông báo logout -->
+        <div th:if="${param.logout}" class="alert alert-success text-center">
+            Bạn đã đăng xuất!
+        </div>
+<!--        Hiển thị thông báo đăng kí thành công-->
+        <div th:if="${success}" class="alert alert-success text-center">
+            <span th:text="#{register.success}"></span>
+        </div>
+
+        <form th:action="@{/login}" method="post">
+
+            <!-- Username -->
+            <div class="mb-3">
+                <label class="form-label" th:text="#{login.username_label}">Tên đăng nhập:</label>
+                <div class="input-group">
+                    <span class="input-group-text">👤</span>
+                    <input type="text" name="username" class="form-control" placeholder="username" required>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="form-label" th:text="#{login.password_label}">Mật khẩu:</label>
+                <div class="input-group">
+                    <span class="input-group-text">🔒</span>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="password" required>
+                    <span class="input-group-text toggle-password" onclick="togglePassword()">👁️</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100" th:text="#{login.submit_label}">Đăng nhập</button>
+        </form>
+
+        <p class="text-center mt-3">
+            <span th:text="#{login.no_account}">Chưa có tài khoản?</span>
+            <a th:href="@{/register}" th:text="#{login.register_here}">Đăng kí</a>
+        </p>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    &copy; 2025 CodeGym
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function togglePassword() {
+        const pwInput = document.getElementById('password');
+        pwInput.type = pwInput.type === 'password' ? 'text' : 'password';
+    }
+</script>
+
+</body>
+</html>

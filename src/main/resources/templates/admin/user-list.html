@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh sách người dùng</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">👥 Danh sách người dùng</h2>
+
+  <div th:if="${param.success}">
+    <div class="alert alert-success text-center">
+      ✅ Cập nhật quyền thành công!
+    </div>
+  </div>
+
+  <table class="table table-bordered table-hover shadow-sm">
+    <thead class="table-primary">
+    <tr>
+      <th>ID</th>
+      <th>Tên đăng nhập</th>
+      <th>Quyền hiện tại</th>
+      <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+      <td th:text="${user.id}"></td>
+      <td th:text="${user.username}"></td>
+
+      <!-- Cột hiển thị quyền -->
+      <td>
+        <span th:text="${#strings.listJoin(userRoles[user.id], ', ')}"></span>
+      </td>
+
+      <!-- Nếu user KHÔNG phải admin thì hiển thị form phân quyền -->
+      <td th:if="${!#lists.contains(userRoles[user.id], 'ROLE_ADMIN')}">
+        <form th:action="@{'/admin/updateRole/' + ${user.id}}" method="post" class="d-flex align-items-center">
+          <select name="role" class="form-select me-2">
+            <option value="ROLE_STUDENT"
+                    th:selected="${#lists.contains(userRoles[user.id], 'ROLE_STUDENT')}">
+              Học viên
+            </option>
+            <option value="ROLE_TEACHER"
+                    th:selected="${#lists.contains(userRoles[user.id], 'ROLE_TEACHER')}">
+              Giáo viên
+            </option>
+            <option value="ROLE_ADMIN"
+                    th:selected="${#lists.contains(userRoles[user.id], 'ROLE_ADMIN')}">
+              Quản trị viên
+            </option>
+          </select>
+          <button type="submit" class="btn btn-success btn-sm">Cập nhật</button>
+        </form>
+      </td>
+
+      <!-- Nếu là admin thì chỉ hiển thị thông báo -->
+      <td th:if="${#lists.contains(userRoles[user.id], 'ROLE_ADMIN')}">
+        <span class="badge bg-secondary">ADMIN</span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="text-center mt-4">
+    <a th:href="@{/admin/home}" class="btn btn-outline-primary">
+      ⬅️ Quay lại trang chủ
+    </a>
+  </div>
+</div>
+
+</body>
+</html>
