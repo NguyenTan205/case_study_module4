@@ -24,10 +24,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
+                        // ✅ Public
                         .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("/teacher/**").hasAnyAuthority("ROLE_TEACHER")
-                        .requestMatchers("/student/**").hasAnyAuthority("ROLE_STUDENT")
+
+                        // ✅ Trang admin
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+
+                        // ✅ Trang teacher
+                        .requestMatchers("/teacher/**").hasAnyAuthority("ROLE_TEACHER", "ROLE_ADMIN")
+
+                        // ✅ Trang student: cho cả 3 role được xem
+                        .requestMatchers("/students/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT")
+
+                        // ✅ Các trang còn lại yêu cầu login
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -35,7 +44,6 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/", true)
                         .successHandler(customSuccessHandler())
                         .permitAll()
                 )
@@ -44,9 +52,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
-                .exceptionHandling(ex -> ex
-                        .accessDeniedPage("/accessDenied")
-                );
+                .exceptionHandling(ex -> ex.accessDeniedPage("/accessDenied"));
 
         return http.build();
     }

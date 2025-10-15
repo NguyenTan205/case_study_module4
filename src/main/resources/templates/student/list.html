@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh sách sinh viên</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    /* Giới hạn độ rộng select và input trong bảng */
+    .table .form-select {
+      width: auto !important;
+      min-width: 140px;
+    }
+
+    /* Nút và select cùng hàng */
+    .table td .d-flex {
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+
+    /* Khoảng cách giữa các nút */
+    .table td .btn {
+      white-space: nowrap;
+    }
+
+    /* Bóng nhẹ cho bảng */
+    .table {
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+<div class="container mt-5">
+
+  <h2 class="text-center mb-4">📋 DANH SÁCH SINH VIÊN</h2>
+
+  <!-- ✅ Thông báo -->
+  <div id="alertBox" th:if="${success}" class="alert alert-success text-center" th:text="${success}"></div>
+
+  <!-- ✅ Nút thêm -->
+  <div class="mb-3" th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''TEACHER'')')}">
+    <a th:href="@{/students/create}" class="btn btn-success">➕ Thêm sinh viên</a>
+  </div>
+
+  <!-- 🔍 Bộ lọc & tìm kiếm -->
+  <form method="get" class="row g-2 mb-4 align-items-center">
+    <div class="col-md-6">
+      <div class="input-group">
+        <input type="text" name="name" th:value="${name}" class="form-control" placeholder="Nhập tên ...">
+        <button type="submit" formaction="/students/search" class="btn btn-outline-secondary">Tìm</button>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <select name="className" class="form-select">
+        <option value="">-- Tất cả lớp --</option>
+        <option th:each="c : ${classes}"
+                th:value="${c}"
+                th:text="${c}"
+                th:selected="${c == className}">
+        </option>
+      </select>
+    </div>
+
+    <div class="col-md-2 d-grid">
+      <button type="submit" formaction="/students/filter" class="btn btn-info text-white">Lọc</button>
+    </div>
+  </form>
+
+  <!-- 🧾 Bảng danh sách -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle text-center shadow-sm">
+      <thead class="table-primary">
+      <tr>
+        <th>No.</th>
+        <th>Họ tên</th>
+        <th>Ngày sinh</th>
+        <th>Email</th>
+        <th>Lớp</th>
+        <th>Điểm kết thúc module</th>
+        <th th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''TEACHER'')')}">Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="s : ${students}" th:id="'row-' + ${s.id}">
+        <td th:text="${s.id}"></td>
+        <td th:text="${s.name}"></td>
+        <td th:text="${#temporals.format(s.birthday, 'dd/MM/yyyy')}"></td>
+        <td th:text="${s.email}"></td>
+        <td th:text="${s.className}"></td>
+        <td th:text="${s.averageGrade}"></td>
+
+        <!-- Cột hành động -->
+        <td th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''TEACHER'')')}">
+          <div class="d-flex justify-content-center">
+            <a th:href="@{'/students/edit/' + ${s.id}}" class="btn btn-sm btn-warning me-2">✏️ Sửa</a>
+
+            <!-- Nút mở modal xoá -->
+            <button th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    data-bs-toggle="modal"
+                    th:data-bs-target="'#deleteModal' + ${s.id}">
+              🗑️ Xoá
+            </button>
+          </div>
+
+          <!-- Modal Xoá -->
+          <div class="modal fade"
+               th:id="'deleteModal' + ${s.id}"
+               tabindex="-1"
+               aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white">
+                  <h5 class="modal-title">Xác nhận xoá</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  ⚠️ Bạn có chắc chắn muốn xoá sinh viên <strong th:text="${s.name}"></strong>?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ Hủy</button>
+                  <button type="button"
+                          class="btn btn-danger btn-confirm-delete"
+                          th:data-id="${s.id}"
+                          data-bs-dismiss="modal">
+                    ✅ Xác nhận xoá
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ✅ Phân trang -->
+  <div class="d-flex justify-content-center mt-4" th:if="${students.totalPages > 1}">
+    <ul class="pagination">
+      <li class="page-item" th:classappend="${students.first} ? 'disabled'">
+        <a class="page-link"
+           th:href="@{/students(page=${students.number - 1}, name=${name}, className=${className})}">Trước</a>
+      </li>
+
+      <li class="page-item"
+          th:each="i : ${#numbers.sequence(0, students.totalPages - 1)}"
+          th:classappend="${i == students.number} ? 'active'">
+        <a class="page-link"
+           th:href="@{/students(page=${i}, name=${name}, className=${className})}"
+           th:text="${i + 1}"></a>
+      </li>
+
+      <li class="page-item" th:classappend="${students.last} ? 'disabled'">
+        <a class="page-link"
+           th:href="@{/students(page=${students.number + 1}, name=${name}, className=${className})}">Sau</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 🔙 Nút quay về -->
+  <div class="text-center mt-4">
+    <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/home}" class="btn btn-outline-primary">⬅️ Quay về trang chủ</a>
+    <a th:if="${#authorization.expression('hasRole(''TEACHER'')')}" th:href="@{/teacher/home}" class="btn btn-outline-primary">⬅️ Quay về trang chủ</a>
+    <a th:if="${#authorization.expression('hasRole(''STUDENT'')')}" th:href="@{/students/home}" class="btn btn-outline-primary">⬅️ Quay về trang chủ</a>
+  </div>
+</div>
+
+<!-- ✅ AJAX Xóa -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const alertBox = document.getElementById("alertBox");
+
+    document.querySelectorAll(".btn-confirm-delete").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const studentId = btn.getAttribute("data-id");
+        const row = document.getElementById(`row-${studentId}`);
+
+        try {
+          const response = await fetch(`/students/delete/${studentId}`, { method: "GET" });
+          if (response.ok) {
+            row.remove();
+            showAlert("✅ Xoá sinh viên thành công!");
+          } else {
+            showAlert("❌ Xoá thất bại!", "danger");
+          }
+        } catch (err) {
+          showAlert("⚠️ Lỗi kết nối máy chủ!", "danger");
+        }
+      });
+    });
+
+    function showAlert(message, type = "success") {
+      alertBox.textContent = message;
+      alertBox.className = `alert alert-${type} text-center`;
+      alertBox.style.display = "block";
+      setTimeout(() => (alertBox.style.display = "none"), 3000);
+    }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

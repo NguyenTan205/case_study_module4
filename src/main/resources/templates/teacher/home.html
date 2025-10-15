@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Trang giáo viên</title>
+    <title>Trang quản trị hệ thống</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
@@ -12,44 +12,58 @@
             flex-direction: row;
             background-color: #f8f9fa;
         }
+
         .content {
             margin-left: 250px;
             flex-grow: 1;
             padding: 20px 30px;
         }
 
+        .dashboard-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .icon-box {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
         .header-bar {
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            background-color: darkgrey;
+            background-color: white;
             border-radius: 8px;
             padding: 10px 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             margin-bottom: 25px;
         }
+
         .user-dropdown .dropdown-toggle::after {
             margin-left: 8px;
-        }
-        .table-container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
 
-<!-- Sidebar giáo viên -->
+<!-- Sidebar -->
 <div th:replace="fragments/teacher-sidebar :: sidebar"></div>
 
+<!-- Nội dung chính -->
 <div class="content">
 
-    <!-- Header -->
+    <!-- Header hiển thị user -->
     <div class="header-bar">
         <div class="dropdown user-dropdown">
-            <a class="dropdown-toggle text-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="dropdown-toggle text-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown"
+               aria-expanded="false">
                 👋 Xin chào <span th:text="${#authentication.name}"></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -62,82 +76,27 @@
         </div>
     </div>
 
-    <!-- Nội dung -->
-    <h2 class="mb-4">📋 Danh sách sinh viên</h2>
+    <!-- Nội dung dashboard -->
+    <h2 class="mb-4">🏠 Trang quản trị hệ thống</h2>
+    <p class="text-muted mb-5">Chào mừng bạn đến với trang quản lý học viên. Chọn một chức năng bên dưới để tiếp
+        tục.</p>
 
-    <div class="table-container">
-        <table class="table table-striped table-hover align-middle">
-            <thead class="table-primary">
-            <tr>
-                <th>#</th>
-                <th>Mã SV</th>
-                <th>Họ và tên</th>
-                <th>Lớp</th>
-                <th>Trạng thái</th>
-                <th>Điểm</th>
-                <th>Thao tác</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="student : ${students}">
-                <td th:text="${student.id}"></td>
-                <td th:text="${student.code}"></td>
-                <td th:text="${student.name}"></td>
-                <td th:text="${student.className}"></td>
-                <td>
-            <span th:text="${student.active ? 'Đang học' : 'Nghỉ học'}"
-                  th:classappend="${student.active} ? 'badge bg-success' : 'badge bg-secondary'"></span>
-                </td>
-                <td th:text="${student.score != null ? student.score : '-'}"></td>
-                <td>
-                    <button type="button" class="btn btn-warning btn-sm"
-                            data-bs-toggle="modal"
-                            th:data-bs-target="'#editModal-' + ${student.id}">
-                        Cập nhật
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Modal cập nhật cho từng sinh viên -->
-    <div th:each="student : ${students}">
-        <div class="modal fade" th:id="'editModal-' + ${student.id}" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form th:action="@{'/teacher/update/' + ${student.id}}" method="post">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Cập nhật sinh viên: <span th:text="${student.name}"></span></h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label class="form-label">Điểm</label>
-                                <input type="number" step="0.01" min="0" max="10" class="form-control" name="score" th:value="${student.score}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Trạng thái</label>
-                                <select class="form-select" name="active">
-                                    <option th:value="true" th:selected="${student.active}">Đang học</option>
-                                    <option th:value="false" th:selected="${!student.active}">Nghỉ học</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-                        </div>
-                    </form>
+    <div class="row g-4">
+        <!-- Danh sách sinh viên -->
+        <div class="col-md-4">
+            <a th:href="@{/students}" class="text-decoration-none text-dark">
+                <div class="dashboard-card bg-white p-4 text-center">
+                    <div class="icon-box text-primary">🎓</div>
+                    <h5>Danh sách sinh viên</h5>
+                    <p class="text-muted small">Xem, tìm kiếm và quản lý thông tin sinh viên</p>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-light text-center py-3 mt-auto border-top">
-        <small>&copy; 2025 Student Manager</small>
-    </footer>
 </div>
+<!-- Footer -->
+<footer>
+    &copy; 2025 CodeGym
+</footer>
 </body>
 </html>

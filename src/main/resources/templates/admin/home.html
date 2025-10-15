@@ -12,24 +12,29 @@
             flex-direction: row;
             background-color: #f8f9fa;
         }
+
         .content {
             margin-left: 250px;
             flex-grow: 1;
             padding: 20px 30px;
         }
+
         .dashboard-card {
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
+
         .dashboard-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         }
+
         .icon-box {
             font-size: 2.5rem;
             margin-bottom: 10px;
         }
+
         .header-bar {
             display: flex;
             justify-content: flex-end;
@@ -37,9 +42,10 @@
             background-color: white;
             border-radius: 8px;
             padding: 10px 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             margin-bottom: 25px;
         }
+
         .user-dropdown .dropdown-toggle::after {
             margin-left: 8px;
         }
@@ -48,7 +54,7 @@
 <body>
 
 <!-- Sidebar -->
-<div th:replace="fragments/sidebar :: sidebar"></div>
+<div th:replace="fragments/admin-sidebar :: sidebar"></div>
 
 <!-- Nội dung chính -->
 <div class="content">
@@ -56,7 +62,8 @@
     <!-- Header hiển thị user -->
     <div class="header-bar">
         <div class="dropdown user-dropdown">
-            <a class="dropdown-toggle text-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="dropdown-toggle text-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown"
+               aria-expanded="false">
                 👋 Xin chào <span th:text="${#authentication.name}"></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -71,12 +78,13 @@
 
     <!-- Nội dung dashboard -->
     <h2 class="mb-4">🏠 Trang quản trị hệ thống</h2>
-    <p class="text-muted mb-5">Chào mừng bạn đến với trang quản lý học viên. Chọn một chức năng bên dưới để tiếp tục.</p>
+    <p class="text-muted mb-5">Chào mừng bạn đến với trang quản lý học viên. Chọn một chức năng bên dưới để tiếp
+        tục.</p>
 
     <div class="row g-4">
         <!-- Danh sách sinh viên -->
         <div class="col-md-4">
-            <a th:href="@{/students/list}" class="text-decoration-none text-dark">
+            <a th:href="@{/students}" class="text-decoration-none text-dark">
                 <div class="dashboard-card bg-white p-4 text-center">
                     <div class="icon-box text-primary">🎓</div>
                     <h5>Danh sách sinh viên</h5>
@@ -95,24 +103,11 @@
                 </div>
             </a>
         </div>
-
-        <!-- Thống kê -->
-        <div class="col-md-4">
-            <a th:href="@{/statistics}" class="text-decoration-none text-dark">
-                <div class="dashboard-card bg-white p-4 text-center">
-                    <div class="icon-box text-info">📊</div>
-                    <h5>Thống kê</h5>
-                    <p class="text-muted small">Xem biểu đồ và dữ liệu hệ thống</p>
-                </div>
-            </a>
-        </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-grey text-center py-3 mt-auto border-top">
-        <small>&copy; 2025 Student Manager</small>
-    </footer>
 </div>
-
+<!-- Footer -->
+<footer>
+    &copy; 2025 CodeGym
+</footer>
 </body>
 </html>

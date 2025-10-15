@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm/Sửa sinh viên</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+  <h2 th:text="${student.id != null ? 'Cập nhật sinh viên' : 'Thêm sinh viên mới'}"></h2>
+  <form th:action="@{/students/save}" method="post" th:object="${student}">
+    <input type="hidden" th:field="*{id}">
+    <div class="mb-3">
+      <label class="form-label">Họ tên</label>
+      <input th:field="*{name}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Ngày sinh</label>
+      <input type="date" th:field="*{birthday}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" th:field="*{email}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Lớp</label>
+      <input th:field="*{className}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Điểm kết thúc module</label>
+      <input type="number" step="0.01" th:field="*{averageGrade}" class="form-control">
+    </div>
+    <button class="btn btn-success" type="submit">💾 Lưu</button>
+    <a class="btn btn-secondary" th:href="@{/students}">⬅️ Quay lại</a>
+  </form>
+</div>
+</body>
+</html>

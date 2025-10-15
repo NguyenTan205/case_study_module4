@@ -5,12 +5,14 @@
     <title th:text="#{register.title}">Đăng ký</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--    Bootstrap ICON-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         html, body {
             height: 100%;
             margin: 0;
             font-family: Arial, sans-serif;
-            background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+            background: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -27,7 +29,7 @@
         }
 
         .navbar-custom {
-            background-color: rgba(34, 34, 34, 0.8);
+            background-color: #272982;
             z-index: 1;
         }
 
@@ -78,7 +80,7 @@
         }
 
         footer {
-            background-color: rgba(34,34,34,0.8);
+            background-color: #272982;
             color: #fff;
             text-align: center;
             padding: 15px 0;
@@ -131,7 +133,7 @@
             <div class="mb-3">
                 <label class="form-label" th:text="#{register.username}">Tên đăng nhập:</label>
                 <div class="input-group">
-                    <span class="input-group-text">👤</span>
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
                     <input type="text" th:field="*{username}" class="form-control" placeholder="username" required>
                 </div>
                 <div class="text-danger mt-1" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
@@ -141,19 +143,28 @@
             <div class="mb-3">
                 <label class="form-label" th:text="#{register.password}">Mật khẩu:</label>
                 <div class="input-group">
-                    <span class="input-group-text">🔒</span>
+                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
                     <input type="password" th:field="*{password}" id="password" class="form-control" placeholder="password" required>
-                    <span class="input-group-text toggle-password" onclick="togglePassword()">👁️</span>
+                    <span class="input-group-text toggle-password" onclick="togglePassword()"><i class="bi bi-eye"></i></span>
                 </div>
                 <div class="text-danger mt-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
 
             <button type="submit" class="btn btn-primary w-100" th:text="#{register.submit}">Đăng ký</button>
-
         </form>
+        <p class="text-center mt-3">
+            <span th:text="#{register.already_account}">Đã có tài khoản?</span>
+            <a th:href="@{/login}" th:text="#{register.login_here}">Đăng nhập</a>
+        </p>
     </div>
 </div>
-
+<!--Đường dẫn các mạng xã hội-->
+<div class="text-end mb-3 pe-4" style="position: relative; z-index: 2;">
+    <a href="https://www.facebook.com/codegym.vn/" target="_blank" class="me-3 text-primary"><i class="bi bi-facebook fs-3"></i></a>
+    <a href="https://www.linkedin.com/company/codegym/" target="_blank" class="me-3 text-info"><i class="bi bi-linkedin fs-3"></i></a>
+    <a href="https://www.youtube.com/@CodeGym/" target="_blank" class="me-3 text-danger"><i class="bi bi-youtube fs-3" ></i></a>
+    <a href="https://www.tiktok.com/@codegymvietnam/" target="_blank" class="text-dark"><i class="bi bi-tiktok fs-3" ></i></a>
+</div>
 <!-- Footer -->
 <footer>
     &copy; 2025 CodeGym
