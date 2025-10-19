@@ -1,7 +1,10 @@
 package com.codegym.controller;
 
+import com.codegym.model.ChangePasswordForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -53,5 +56,36 @@ public class UserController {
     @GetMapping("/login")
     public String showLoginForm() {
         return "user/login";
+    }
+
+    // Đổi mật khẩu
+    @GetMapping("/change-password")
+    public String showChangePasswordForm(Model model) {
+        model.addAttribute("changePasswordForm", new ChangePasswordForm());
+        return "change-password";
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(@Validated @ModelAttribute("changePasswordForm") ChangePasswordForm changePasswordForm, BindingResult bindingResult,
+                                 Model model) {
+        if (bindingResult.hasErrors()) {
+            return "change-password";
+        }
+
+        if (!changePasswordForm.getNewPassword().equals((changePasswordForm.getConfirmPassword()))) {
+            bindingResult.rejectValue("confirmPassword", "error.confirmPassword", "Xác nhận mật khẩu không khớp");
+            return "change-password";
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        try {
+            userService.changeOwnPassword(username, changePasswordForm.getOldPassword(), changePasswordForm.getNewPassword());
+            model.addAttribute("success", "Đổi mật khẩu thành công!");
+        } catch (RuntimeException e) {
+            bindingResult.rejectValue("oldPassword", "error.oldPassword", e.getMessage());
+        }
+        return "change-password";
     }
 }

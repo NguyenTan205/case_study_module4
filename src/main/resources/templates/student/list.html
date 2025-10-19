@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Danh sách sinh viên</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
   <style>
     /* Giới hạn độ rộng select và input trong bảng */
@@ -33,14 +34,14 @@
 <body class="bg-light">
 <div class="container mt-5">
 
-  <h2 class="text-center mb-4">📋 DANH SÁCH SINH VIÊN</h2>
+  <h2 class="text-center mb-4"><i class="bi bi-book"> DANH SÁCH SINH VIÊN</i></h2>
 
   <!-- ✅ Thông báo -->
   <div id="alertBox" th:if="${success}" class="alert alert-success text-center" th:text="${success}"></div>
 
   <!-- ✅ Nút thêm -->
   <div class="mb-3" th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''TEACHER'')')}">
-    <a th:href="@{/students/create}" class="btn btn-success">➕ Thêm sinh viên</a>
+    <a th:href="@{/students/create}" class="btn btn-success"><i class="bi bi-person-fill-add">Thêm sinh viên</i></a>
   </div>
 
   <!-- 🔍 Bộ lọc & tìm kiếm -->
@@ -94,7 +95,7 @@
         <!-- Cột hành động -->
         <td th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''TEACHER'')')}">
           <div class="d-flex justify-content-center">
-            <a th:href="@{'/students/edit/' + ${s.id}}" class="btn btn-sm btn-warning me-2">✏️ Sửa</a>
+            <a th:href="@{'/students/edit/' + ${s.id}}" class="btn btn-sm btn-warning me-2"><i class="bi bi-pen">Sửa</i></a>
 
             <!-- Nút mở modal xoá -->
             <button th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
@@ -102,7 +103,7 @@
                     class="btn btn-sm btn-danger"
                     data-bs-toggle="modal"
                     th:data-bs-target="'#deleteModal' + ${s.id}">
-              🗑️ Xoá
+              <i class="bi bi-trash">Xoá</i>
             </button>
           </div>
 
@@ -143,7 +144,7 @@
     <ul class="pagination">
       <li class="page-item" th:classappend="${students.first} ? 'disabled'">
         <a class="page-link"
-           th:href="@{/students(page=${students.number - 1}, name=${name}, className=${className})}">Trước</a>
+           th:href="@{/students(page=${students.number - 1}, name=${name}, className=${className})}"><i class="bi bi-arrow-left-circle"></i></a>
       </li>
 
       <li class="page-item"
@@ -156,16 +157,16 @@
 
       <li class="page-item" th:classappend="${students.last} ? 'disabled'">
         <a class="page-link"
-           th:href="@{/students(page=${students.number + 1}, name=${name}, className=${className})}">Sau</a>
+           th:href="@{/students(page=${students.number + 1}, name=${name}, className=${className})}"><i class="bi bi-arrow-right-circle"></i></a>
       </li>
     </ul>
   </div>
 
   <!-- 🔙 Nút quay về -->
   <div class="text-center mt-4">
-    <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/home}" class="btn btn-outline-primary">⬅️ Quay về trang chủ</a>
-    <a th:if="${#authorization.expression('hasRole(''TEACHER'')')}" th:href="@{/teacher/home}" class="btn btn-outline-primary">⬅️ Quay về trang chủ</a>
-    <a th:if="${#authorization.expression('hasRole(''STUDENT'')')}" th:href="@{/students/home}" class="btn btn-outline-primary">⬅️ Quay về trang chủ</a>
+    <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/home}" class="btn btn-outline-primary"><i class="bi bi-box-arrow-left">  Quay về trang chủ</i></a>
+    <a th:if="${#authorization.expression('hasRole(''TEACHER'')')}" th:href="@{/teacher/home}" class="btn btn-outline-primary"><i class="bi bi-box-arrow-left">  Quay về trang chủ</i></a>
+    <a th:if="${#authorization.expression('hasRole(''STUDENT'')')}" th:href="@{/students/home}" class="btn btn-outline-primary"><i class="bi bi-box-arrow-left">  Quay về trang chủ</i></a>
   </div>
 </div>
 
